@@ -5,8 +5,21 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:_4chan_swiss_knife"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="MainWindow" Height="500" Width="700"
+        ShowInTaskbar="True">
     <Grid>
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Margin="10 5 10 5">
+            <TextBlock>Enter Thread Url</TextBlock>
+            <TextBox x:Name="urlBar" Margin="0 0 0 5"></TextBox>
+            <Button x:Name="urlSubmitButton" Margin="0 0 0 10" Click="urlSubmitButton_Click">Add Url to Watcher</Button>
+            <Button Margin="0 5 0 5" x:Name="urlRemoveButton" Click="urlRemoveButton_Click">Remove Selected Url</Button>
+            <Button x:Name="testButton" Click="testButton_Click">Test</Button>
+        </StackPanel>
+        <ListBox Grid.Column="1" Margin="10 5 10 5" x:Name="urlList" MouseDoubleClick="urlList_MouseDoubleClick">
+        </ListBox>
     </Grid>
 </Window>

@@ -13,5 +13,6 @@ namespace _4chan_swiss_knife
     /// </summary>
     public partial class App : Application
     {
+        public static  main._4chan_threads threads = new main._4chan_threads();
     }
 }
