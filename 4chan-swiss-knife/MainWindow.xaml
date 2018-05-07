@@ -5,9 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:_4chan_swiss_knife"
         mc:Ignorable="d"
-        Title="MainWindow" Height="500" Width="700"
+        Title="MainWindow" Height="500" Width="720"
         ShowInTaskbar="True">
-    <Grid>
+    <Grid KeyDown="MainWindow_Shortcuts">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
@@ -16,10 +16,47 @@
             <TextBlock>Enter Thread Url</TextBlock>
             <TextBox x:Name="urlBar" Margin="0 0 0 5"></TextBox>
             <Button x:Name="urlSubmitButton" Margin="0 0 0 10" Click="urlSubmitButton_Click">Add Url to Watcher</Button>
-            <Button Margin="0 5 0 5" x:Name="urlRemoveButton" Click="urlRemoveButton_Click">Remove Selected Url</Button>
-            <Button x:Name="testButton" Click="testButton_Click">Test</Button>
+            <Grid Height="90">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" Margin="5 5 5 5">New Thread Name</TextBlock>
+                <TextBox Grid.Row="1" Grid.ColumnSpan="2" x:Name="newThreadNameBox" Margin="5 5 5 5"></TextBox>
+                <Button Grid.Row="2" Grid.Column="0" Margin="5 5 5 5" x:Name="threadRenameButton" Click="threadRenameButton_Click">Rename Thread</Button>
+                <!--<Button Grid.Row="0" Grid.Column="0" Margin="0 10 5 0" x:Name="threadRenameButton" Click="threadRenameButton_Click">Rename Thread</Button>-->
+                <Button Grid.Row="2" Grid.Column="1" Margin="5 5 5 5" x:Name="urlRemoveButton" Click="urlRemoveButton_Click">Remove Selected Url</Button>
+            </Grid>
+            <Button Margin="0 15 0 6" x:Name="startWatcher" Click="startWatcher_Click">Start Thread Watcher</Button>
+            <Button Margin="0 5 0 5" x:Name="stopWatcher" Click="stopWatcher_Click">Stop Thread Watcher</Button>
         </StackPanel>
         <ListBox Grid.Column="1" Margin="10 5 10 5" x:Name="urlList" MouseDoubleClick="urlList_MouseDoubleClick">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="2*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Column="0" Grid.Row="0">Name :</TextBlock>
+                        <TextBlock Grid.Column="0" Grid.Row="1">Url :</TextBlock>
+                        <TextBlock Grid.Column="0" Grid.Row="2">Downloaded :</TextBlock>
+                        <TextBlock Grid.Column="1" Grid.Row="0" Text="{Binding Name}"/>
+                        <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding Url}"/>
+                        <TextBlock Grid.Column="1" Grid.Row="2" Text="{Binding DownloadedImages}"/>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
         </ListBox>
     </Grid>
 </Window>

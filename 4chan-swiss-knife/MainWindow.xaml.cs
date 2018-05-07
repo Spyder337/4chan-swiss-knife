@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.ComponentModel;
 
 namespace _4chan_swiss_knife
 {
@@ -21,18 +22,46 @@ namespace _4chan_swiss_knife
     /// </summary>
     public partial class MainWindow : Window
     {
+
+        BackgroundWorker worker;
+        KeyEventHandler keyEvent;
         public MainWindow()
         {
             InitializeComponent();
-            App.threads.AddThread("cock.li");
+            keyEvent += new KeyEventHandler(MainWindow_Shortcuts);
+            App.threads.AddThread("http://boards.4chan.org/g/thread/65819304");
+            App.threads.AddThread("http://boards.4chan.org/g/thread/65817442");
             urlList.ItemsSource = main._4chan_threads.Threads;
+            
+        }
+
+        private void MainWindow_Shortcuts(object sender, KeyEventArgs e)
+        {
+            if(e.Key == Key.O)
+            {
+                if(Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
+                {
+                    if (urlList.SelectedItem == null)
+                        return;
+                    foreach (object o in urlList.Items)
+                    {
+                        if ((o is main.Thread) && o == urlList.SelectedItem)
+                        {
+
+                            System.Diagnostics.Process.Start(((main.Thread)o).directory);
+                        }
+                    }
+                }
+            }
         }
 
         private void urlSubmitButton_Click(object sender, RoutedEventArgs e)
         {
             if (urlBar.Text.Equals(""))
                 return;
-            urlList.Items.Add(urlBar.Text);
+            App.threads.AddThread(urlBar.Text);
+            urlList.ItemsSource = null;
+            urlList.ItemsSource = main._4chan_threads.Threads;
             urlBar.Text = "";
         }
 
@@ -40,7 +69,9 @@ namespace _4chan_swiss_knife
         {
             if(urlList.SelectedItem != null)
             {
-                urlList.Items.Remove(urlList.SelectedItem);
+                main._4chan_threads.Threads.Remove(((main.Thread)urlList.SelectedItem));
+                urlList.ItemsSource = null;
+                urlList.ItemsSource = main._4chan_threads.Threads;
             }
             else
             {
@@ -52,14 +83,47 @@ namespace _4chan_swiss_knife
         {
             if (urlList.SelectedItem == null)
                 return;
-            Windows._4chan_Settings settings = new Windows._4chan_Settings();
-            settings.Owner = this;
-            settings.Show();
+            foreach(object o in urlList.Items)
+            {
+                if((o is main.Thread) && o == urlList.SelectedItem)
+                {
+                    
+                    System.Diagnostics.Process.Start(((main.Thread)o).Url);
+                }
+            }
         }
 
-        private void testButton_Click(object sender, RoutedEventArgs e)
+        private void startWatcher_Click(object sender, RoutedEventArgs e)
         {
-            main._4chan_threads.Threads.RemoveAt(0);
+            worker = new BackgroundWorker();
+            worker.DoWork += watcherDoWork;
+            worker.RunWorkerAsync();
+        }
+
+        void watcherDoWork(object sender, DoWorkEventArgs e)
+        {
+            foreach(main.Thread t in urlList.Items)
+            {
+                App.threads.ScrapeThread(t);
+            }
+        }
+
+        private void stopWatcher_Click(object sender, RoutedEventArgs e)
+        {
+        }
+
+        private void threadRenameButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (urlList.SelectedItem == null || newThreadNameBox.Text == "")
+                return;
+            foreach (object o in urlList.Items)
+            {
+                if ((o is main.Thread) && o == urlList.SelectedItem)
+                {
+                    ((main.Thread)o).Name = newThreadNameBox.Text;
+                    newThreadNameBox.Text = "";
+                }
+            }
         }
     }
 }
